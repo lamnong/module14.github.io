@@ -1,10 +1,10 @@
 const express = require('express');
 const routes = require('./controllers');
-const sequelize = require('./config/connection');
+const sequelizeConnection = require('./config/sequelizeConnection');
 const path = require('path');
 const helpers = require('./utils/helpers');
 const exphbs = require('express-handlebars');
-const models =require('./models')
+// const models =require('./models')
 
 const session = require('express-session');
 
@@ -23,13 +23,14 @@ const sess = {
   rolling: true,
   saveUninitialized: true,
   store: new SequelizeStore({
-    db: sequelize
+    db: sequelizeConnection
   }),
 };
 
 const hbs = exphbs.create({ helpers });
 
 app.use(session(sess));
+app.use(require('./controllers/'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,11 +39,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
-app.use(routes);
+// app.use(routes);
 
 // require('/models');
 
 // turn on connection to db and server
-sequelize.sync({ force: true }).then(() => {
-  app.listen(PORT, () => console.log('Now listening'));
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}!`);
+  sequelizeConnection.sync({ force: false })//.then(() => require('./seeds'))
 });

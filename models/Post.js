@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelizeConnection = require('../config/connection');
+const sequelizeConnection = require('../config/sequelizeConnection');
 
 
 const Post = sequelizeConnection.define('post', {

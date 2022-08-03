@@ -1,11 +1,15 @@
 // const seedPosts = require('./post-seeds');
 // const seedUsers = require('./user-seeds');
 // const seedComments = require('./comment-seeds');
-const {User, Post, Comment}=require('../models')
+const {
+  User, 
+  Post, 
+  Comment
+}=require('../models')
 
 const sequelize = require('../config/connection');
 
-const user = [
+const users = [
   {
     username: 'lamnong',
     password: '123456'
@@ -38,7 +42,7 @@ const posts = [
   },
 ];
 
-const comment = [
+const comments = [
   {
     content: 'this is horrible',
     user_id: 3,
@@ -52,7 +56,7 @@ const comment = [
 ];
 
 const seedAll =async ()=> {
-  await User.bulkCreate(users);
+  await User.bulkCreate(users, { individualHooks: true });
   await Post.bulkCreate(posts);
   await Comment.bulkCreate(comments);
 };

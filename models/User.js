@@ -34,15 +34,16 @@ const User = sequelizeConnection.define('user',{
 });
  
 User.beforeCreate(async user => {
+  const userData = user.dataValues;
   user.password = await bcrypt.hash(user.password, 10);
 })
 
-const newUser = {
-  username: 'Lam Nong',
-  password: '123456'
-  }
+// const newUser = {
+//   username: 'Lam Nong',
+//   password: '123456'
+//   }
 
-  User.creat(newUser);
+//   User.creat(newUser);
 
 
 module.exports = User;
