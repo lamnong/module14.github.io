@@ -1,32 +1,32 @@
 const router = require('express').Router();
 const { Post, User, Comment } = require('../../models');
-const sequelizeConnection = require('../../config/sequelizeConnection');
+const sequelize = require('../../config/connection');
 const withAuth = require('../../utils/auth');
 
 // get all users
 router.get('/', (req, res) => {
-    console.log('======================');
+    console.log('=.=');
     Post.findAll({
         attributes: [
             'id',
             'title',
             'created_at',
-            'post_content'
+            'content'
         ],
       order: [['created_at', 'DESC']],
       include: [
         // Comment model here -- attached username to comment
         {
           model: Comment,
-          attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+          attributes: ['id', 'content', 'post_id', 'user_id', 'created_at'],
           include: {
             model: User,
-            attributes: ['username', 'twitter', 'github']
+            attributes: ['username']
           }
         },
         {
           model: User,
-          attributes: ['username', 'twitter', 'github']
+          attributes: ['username']
         },
       ]
     })
@@ -46,20 +46,20 @@ router.get('/', (req, res) => {
         'id',
         'title',
         'created_at',
-        'post_content'
+        'content'
       ],
       include: [
         // include the Comment model here:
         {
           model: User,
-          attributes: ['username', 'twitter', 'github']
+          attributes: ['username']
         },
         {
           model: Comment,
-          attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+          attributes: ['id', 'content', 'post_id', 'user_id', 'created_at'],
           include: {
             model: User,
-            attributes: ['username', 'twitter', 'github']
+            attributes: ['username']
           }
         }
       ]
@@ -80,7 +80,7 @@ router.get('/', (req, res) => {
 router.post('/', withAuth, (req, res) => {
     Post.create({
       title: req.body.title,
-      post_content: req.body.post_content,
+      content: req.body.content,
       user_id: req.session.user_id
     })
       .then(dbPostData => res.json(dbPostData))
@@ -93,7 +93,7 @@ router.post('/', withAuth, (req, res) => {
 router.put('/:id', withAuth, (req, res) => {
     Post.update({
         title: req.body.title,
-        post_content: req.body.post_content
+        content: req.body.content
       },
       {
         where: {
@@ -102,7 +102,7 @@ router.put('/:id', withAuth, (req, res) => {
       })
       .then(dbPostData => {
         if (!dbPostData) {
-          res.status(404).json({ message: 'No post found with this id' });
+          res.status(404).json({ message: 'No post found' });
           return;
         }
         res.json(dbPostData);
@@ -121,7 +121,7 @@ router.put('/:id', withAuth, (req, res) => {
     })
       .then(dbPostData => {
         if (!dbPostData) {
-          res.status(404).json({ message: 'No post found with this id' });
+          res.status(404).json({ message: 'No post found' });
           return;
         }
         res.json(dbPostData);

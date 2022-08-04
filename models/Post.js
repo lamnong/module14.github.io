@@ -1,8 +1,10 @@
 const Sequelize = require('sequelize');
-const sequelizeConnection = require('../config/sequelizeConnection');
+const sequelize = require('../config/connection');
 
+class Post extends Sequelize.Model {}
 
-const Post = sequelizeConnection.define('post', {
+// const Post = sequelize.define('Post', {
+Post.init({
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -19,6 +21,10 @@ const Post = sequelizeConnection.define('post', {
     type: Sequelize.TEXT,
     allowNull: false
   },
+  created_at: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
   user_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -26,15 +32,16 @@ const Post = sequelizeConnection.define('post', {
         model: 'User',
         key: 'id'
     }
-  }
-
-},
+  }},
   {
-    sequelize: sequelizeConnection,
+    sequelize,
     timestamps: true,
     freezeTableName: true,
     modelName: 'posts',
     underscored: true
-  });
+  }
+);
+
+// Post.sync({force:true});
 
 module.exports = Post;
